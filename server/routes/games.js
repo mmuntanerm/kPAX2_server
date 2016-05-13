@@ -35,7 +35,7 @@ router.get('/users/:gameId/:gameClass', function(req, res, next) {
 
 
 /* GET with variable URL within a pattern; response url's:  "us*s" == users, usuarios, usos*/
-router.get('/us*s', function(req, res, next) {
+router.get('/users', function(req, res, next) {
   var response ={
       url:  req.url,
       data: 'Data for this URL : ' + req.url ,
