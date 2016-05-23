@@ -16,7 +16,12 @@ var app = express();
 
 // connect to databse
 var database = null
-MongoClient.connect('mongodb://readwrite:1234@ds021462.mlab.com:21462/kpax2', function (err, db) {
+
+var url = 'mongodb://localhost:27017/kpax2';  // For working on local DB
+var url_r = 'mongodb://readwrite:1234@ds021462.mlab.com:21462/kpax2';  // For working on remote DB
+
+//MongoClient.connect('mongodb://readwrite:1234@ds021462.mlab.com:21462/kpax2', function (err, db) {
+MongoClient.connect(url, function (err, db) {
     if (err) {
         throw err;
     } 
@@ -46,6 +51,14 @@ app.use(function (req, res, next) {
   req.db = database
   next()
 })
+
+// this middleware will be executed for every request to the app
+app.use(function (req, res, next) {
+  console.log('Aquest middleware s executa cada cop ');
+  console.log('Time: %d', Date.now());
+  
+  next();
+});
 
 // add routes. this will load the index.js
 app.use('/', routes);

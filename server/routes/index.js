@@ -6,6 +6,7 @@ var router = express.Router();
 router.use('/test', require('./test'));
 router.use('/user', require('./user'));
 router.use('/games', require('./games'));
+router.use('/gamesx', require('./gamesx'));
 
 
 /* GET home page. */
