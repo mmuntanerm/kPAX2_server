@@ -88,6 +88,38 @@ router.get('/list', function(req, res, next) {
 	)
 })
 
+/**
+ * list ONE game (by Id of the Game)
+ */
+router.get('/:game_id', function(req, res, next) {
+	var gameId = req.params.game_id;
+	console.log(gameId); 
+	// find game
+	req.db.collection('games').find(
+		{"_id" : gameId},
+		function (err, cursor) {
+
+			// check error
+			if (err) {
+				return res.status(500).send(err.message)
+			}
+
+			var games = []
+
+			// walk cursor
+			cursor.each(function (err, doc) {
+
+				// end
+				if (doc == null) {
+					return res.jsonp(games)
+				}
+
+				games.push(doc)
+			})
+		}
+	)
+})
+
 
 /* GET games listing. */
 router.get('/', function(req, res, next) {
