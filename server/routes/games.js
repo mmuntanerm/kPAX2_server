@@ -121,6 +121,11 @@ router.get('/:game_id', function(req, res, next) {
 })
 
 
+//*
+// PUT 
+
+//*
+
 /* GET games listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
