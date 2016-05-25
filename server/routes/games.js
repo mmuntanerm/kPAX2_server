@@ -31,7 +31,7 @@ router.post('/', function (req, res) {
 
 			var now = new Date()
 
-			// crete new game - only a few of fields
+			// create new game - only a few of fields
 			var game = {
 				name: req.body.name,
 				owner: req.body.owner_id,
@@ -121,8 +121,66 @@ router.get('/:game_id', function(req, res, next) {
 })
 
 
-//*
-// PUT 
+
+
+
+
+
+/**
+ * PUT 
+ */
+
+
+router.put('/like', function (req, res) {
+
+	// check parameters
+	if (!req.body.name) {
+		// 400 - bad request
+		res.status(400).send('Bad parameters. Game name required ')
+	}
+
+	// find game
+	req.db.collection('games').findOne(
+		{ name: req.body.name },
+		function (err, doc) {
+
+			// if error, return
+			if (err) {
+				// 500
+				return res.status(500).send(err.message)
+			}
+			// if NOT found, update 
+			else if (!doc) {
+				// Game not Found
+				return res.status(404).send('game ' + req.body.name  + 'already exists')
+			}
+
+
+			// game found -- UPdate nlikes +1 
+			req.db.collection('games').update(
+				//update_filter,
+				{'name': req.body.name },{$inc:{'nlikes': +1}}, true, true, 
+				function (err, doc) {
+					// if error, return
+					if (err) {
+						// 500
+						return res.status(500).send(err.message)
+					}
+					// Nothing Here					
+				}
+			)  // update end 
+
+
+
+			res.jsonp(doc); // put ENDs ; sends a response needed to END the Update.  Response with a record updated info
+			console.log(doc)
+		}
+	) // find one
+})
+
+
+
+
 
 //*
 
