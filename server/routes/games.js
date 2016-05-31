@@ -60,6 +60,8 @@ router.post('/', function (req, res) {
 
 /**
  * list games
+ * No parameters needed
+ * endpoint: 	/games/list
  */
 router.get('/list', function(req, res, next) {
 	// find game
@@ -124,16 +126,11 @@ router.get('/:game_id', function(req, res, next) {
 })
 
 
-
-
-
-
-
 /**
  * PUT
+ * parameter:  name  (game name)
+ * 
  */
-
-
 router.put('/like', function (req, res) {
 
 	// check parameters
@@ -157,7 +154,7 @@ router.put('/like', function (req, res) {
 			// if NOT found, update
 			else if (!doc) {
 				// Game not Found
-				return res.status(404).send('game ' + req.body.name  + 'already exists')
+				return res.status(404).send('game ' + req.body.name  + 'NOT exists')
 			}
 
 			else {
@@ -191,11 +188,93 @@ router.put('/like', function (req, res) {
 
 
 
+
+
+
+
+
+
+/**
+ * POST - Plus completion user info   modified on 2016-05-31 !
+ * 	Parameters: User_id , Game_id 
+ *  nlike ++ 
+ *	additional info of user and date of 'like' added
+ */
+
+
+router.post('/like', function (req, res) {
+
+	// check parameters
+	if (!req.body.game_id || !req.body.user_id) {
+		// 400 - bad request
+		console.log('** No Parameters. Game name required');
+		return res.status(400).send('Bad parameters. Game name required ')
+
+	}
+
+
+	var gameId = req.body.game_id;
+	var userId = req.body.user_id;
+
+	// find game
+	req.db.collection('games').findOne(
+		{"_id" : new ObjectId(gameId)},
+		
+		function (err, doc) {
+
+			// if error, return
+			if (err) {
+				// 500
+				return res.status(500).send(err.message); 
+			}
+			// if NOT found, update
+			else if (!doc) {
+				// Game not Found
+				return res.status(404).send('game ' + req.body.name  + ' NOT exists')
+			}
+
+			else {
+			// game found -- UPdate nlikes +1
+
+			var userDateInfo = {'uid': userId, 'date': new Date()};
+			req.db.collection('games').update(
+				//update_filter,
+				{"_id" : new ObjectId(gameId)},{$inc:{'nlikes': +1}, $push:{ulike:userDateInfo }}, true, true,
+				function (err, doc) {
+					// if error, return
+					if (err) {
+						// 500
+						return res.status(500).send(err.message)
+					}
+					// Nothing Here
+				}
+			)  // update end
+
+
+
+			res.jsonp(doc); // put ENDs ; sends a response needed to END the Update.  Response with a record updated info
+			console.log(doc)
+
+			}
+			
+
+		}
+	) // find one
+})
+
+
+
+
+
+
+
 //*
 
 /* GET games listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+	  res.send('respond with a resource');
+	});
+
+
 
 module.exports = router;
