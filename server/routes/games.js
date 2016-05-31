@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
-
+var {ObjectId} = require('mongodb'); //like ObjectId=require('mongodb').ObjectId;
 
 /**
- * Add a new game 
+ * Add a new game
  */
 router.post('/', function (req, res) {
 
@@ -35,7 +35,7 @@ router.post('/', function (req, res) {
 			var game = {
 				name: req.body.name,
 				owner: req.body.owner_id,
-				status: 0, 
+				status: 0,
 				nlikes: 0,
 				created_at: now,
 				updated_at: now
@@ -93,10 +93,13 @@ router.get('/list', function(req, res, next) {
  */
 router.get('/:game_id', function(req, res, next) {
 	var gameId = req.params.game_id;
-	console.log(gameId); 
+	console.log(gameId);
 	// find game
 	req.db.collection('games').find(
-		{"_id" : gameId},
+	//		{"_id" : gameId},
+	//		{"_id" : new BSON.ObjectID(gameId)},
+		{"_id" : new ObjectId(gameId)},
+
 		function (err, cursor) {
 
 			// check error
@@ -127,7 +130,7 @@ router.get('/:game_id', function(req, res, next) {
 
 
 /**
- * PUT 
+ * PUT
  */
 
 
@@ -136,7 +139,9 @@ router.put('/like', function (req, res) {
 	// check parameters
 	if (!req.body.name) {
 		// 400 - bad request
-		res.status(400).send('Bad parameters. Game name required ')
+		console.log('** No Parameters. Game name required');
+		return res.status(400).send('Bad parameters. Game name required ')
+
 	}
 
 	// find game
@@ -147,33 +152,37 @@ router.put('/like', function (req, res) {
 			// if error, return
 			if (err) {
 				// 500
-				return res.status(500).send(err.message)
+				return res.status(500).send(err.message); 
 			}
-			// if NOT found, update 
+			// if NOT found, update
 			else if (!doc) {
 				// Game not Found
 				return res.status(404).send('game ' + req.body.name  + 'already exists')
 			}
 
-
-			// game found -- UPdate nlikes +1 
+			else {
+			// game found -- UPdate nlikes +1
 			req.db.collection('games').update(
 				//update_filter,
-				{'name': req.body.name },{$inc:{'nlikes': +1}}, true, true, 
+				{'name': req.body.name },{$inc:{'nlikes': +1}}, true, true,
 				function (err, doc) {
 					// if error, return
 					if (err) {
 						// 500
 						return res.status(500).send(err.message)
 					}
-					// Nothing Here					
+					// Nothing Here
 				}
-			)  // update end 
+			)  // update end
 
 
 
 			res.jsonp(doc); // put ENDs ; sends a response needed to END the Update.  Response with a record updated info
 			console.log(doc)
+
+			}
+			
+
 		}
 	) // find one
 })
