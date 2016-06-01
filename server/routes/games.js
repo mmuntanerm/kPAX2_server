@@ -71,9 +71,15 @@ router.get('/list', function(req, res, next) {
 
 	if (typeof(req.query.q) != 'undefined' )
 		{
-		 	console.log('Query condition:q=  %s ', req.query.q)
-			var gameQuery = JSON.parse(req.query.q);
-
+		 	if (IsJsonString(req.query.q) ) {
+		 		console.log('Query condition:q=  %s ', req.query.q)
+				var gameQuery = JSON.parse(req.query.q);
+				}
+				else 
+				{
+					console.log(' Bad JSON format, NO Query Done!: NO records listed')
+					var gameQuery = {"_id":null};
+				}	
 		} else {
 		  	console.log(' q Query condition not defined: all records listed')
 			var gameQuery = {};
@@ -338,3 +344,16 @@ router.get('/', function(req, res, next) {
 
 
 module.exports = router;
+
+
+
+// Aux Function
+function IsJsonString(str) {
+	// For testing if str is a well formed JSON chain 
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
