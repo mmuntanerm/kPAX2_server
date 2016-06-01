@@ -59,11 +59,62 @@ router.post('/', function (req, res) {
 })
 
 /**
- * list games
- * No parameters needed
- * endpoint: 	/games/list
+ * list games under a FREE condition 
+ * if no parameter passed, all games ar listed 
+ * the 'q' query must be a valid JSON query condition in MongoBD format
+ * endpoint method: GET
+ * example : /games/list?q={"nlikes":{"$lt":15}}
  */
 router.get('/list', function(req, res, next) {
+	
+	console.log("games/list endpoint! Query Chain passed: %s",req.query.q);
+
+	if (typeof(req.query.q) != 'undefined' )
+		{
+		 	console.log('Query condition:q=  %s ', req.query.q)
+			var gameQuery = JSON.parse(req.query.q);
+
+		} else {
+		  	console.log(' q Query condition not defined: all records listed')
+			var gameQuery = {};
+
+		};
+
+	console.log('JSON Query passed: ', gameQuery);
+
+	// find game
+	req.db.collection('games').find(
+		gameQuery,
+		function (err, cursor) {
+
+			// check error
+			if (err) {
+				return res.status(500).send(err.message)
+			}
+
+			var games = []
+
+			// walk cursor
+			cursor.each(function (err, doc) {
+
+				// end
+				if (doc == null) {
+					return res.jsonp(games)
+				}
+
+				games.push(doc)
+			})
+		}
+	)
+})
+
+
+/**
+ * list games
+ * No parameters needed
+ * endpoint: GET 	/games/list
+ */
+router.get('/lista', function(req, res, next) {
 	// find game
 	req.db.collection('games').find(
 		{},
@@ -92,6 +143,8 @@ router.get('/list', function(req, res, next) {
 
 /**
  * list ONE game (by Id of the Game)
+ * parameter: game_id
+ * GET /game/:game_id
  */
 router.get('/:game_id', function(req, res, next) {
 	var gameId = req.params.game_id;
@@ -127,7 +180,9 @@ router.get('/:game_id', function(req, res, next) {
 
 
 /**
- * PUT
+ * 
+ * Simple ADD like ( just increases by 1 nlike counter)
+ * PUT   /game/like
  * parameter:  name  (game name)
  * 
  */
@@ -189,14 +244,10 @@ router.put('/like', function (req, res) {
 
 
 
-
-
-
-
-
 /**
- * POST - Plus completion user info   modified on 2016-05-31 !
- * 	Parameters: User_id , Game_id 
+ *  'Complex' ADD like && Plus user / Date info 
+ *  POST  /game/like
+ * 	Parameters: user_id , game_id 
  *  nlike ++ 
  *	additional info of user and date of 'like' added
  */
@@ -239,20 +290,29 @@ router.post('/like', function (req, res) {
 			var userDateInfo = {'uid': userId, 'date': new Date()};
 			req.db.collection('games').update(
 				//update_filter,
-				{"_id" : new ObjectId(gameId)},{$inc:{'nlikes': +1}, $push:{ulike:userDateInfo }}, true, true,
+				{"_id" : new ObjectId(gameId)},
+				{
+					$inc:{'nlikes': +1}, 
+					$push:{ulike:userDateInfo }
+				},
+					true,
+					true,
 				function (err, doc) {
 					// if error, return
 					if (err) {
 						// 500
 						return res.status(500).send(err.message)
 					}
-					// Nothing Here
+					else {
+						// Nothing Here
+					}
+					 
 				}
 			)  // update end
 
 
 
-			res.jsonp(doc); // put ENDs ; sends a response needed to END the Update.  Response with a record updated info
+			res.jsonp(doc); // post ENDs ; sends a response needed to END the Update.  Response with a record updated info
 			console.log(doc)
 
 			}
