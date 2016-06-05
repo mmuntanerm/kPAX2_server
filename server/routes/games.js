@@ -10,7 +10,7 @@ router.post('/', function (req, res) {
 	// check parameters
 	if (!req.body.name || !req.body.owner_id) {
 		// 400 - bad request
-		res.status(400).send('Bad parameters')
+		return res.status(400).send('Bad parameters')
 	}
 
 	// find game
@@ -35,7 +35,7 @@ router.post('/', function (req, res) {
 			var game = {
 				name: req.body.name,
 				owner: req.body.owner_id,
-				status: 0,
+				status: 1,
 				nlikes: 0,
 				created_at: now,
 				updated_at: now

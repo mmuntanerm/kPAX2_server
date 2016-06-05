@@ -10,7 +10,9 @@ router.post('/', function (req, res) {
 	// check parameters
 	if (!req.body.login || !req.body.name) {
 		// 400 - bad request
-		res.status(400).send('Bad parameters')
+		console.log("LOGIN: %s", req.body.login);
+		console.log("NAME: %s", req.body.name);
+		return res.status(400).send('Bad parameters')
 	}
 
 	// find user
@@ -57,7 +59,9 @@ router.post('/', function (req, res) {
 })
 
 /**
- * list users
+ * list users (all users in the system)
+ * URL example:  METHOD: GET
+ * http://localhost:3000/user/list
  */
 router.get('/list', function(req, res, next) {
 	// find user
