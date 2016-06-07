@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var {ObjectId} = require('mongodb'); //like ObjectId=require('mongodb').ObjectId;
 
+var auxliar = require ('./aux.js');  // Imports aux functions 
+
 /**
  * Add a new game
  */
@@ -71,7 +73,7 @@ router.get('/list', function(req, res, next) {
 
 	if (typeof(req.query.q) != 'undefined' )
 		{
-		 	if (IsJsonString(req.query.q) ) {
+		 	if (auxliar.IsJsonString(req.query.q) ) {
 		 		console.log('Query condition:q=  %s ', req.query.q)
 				var gameQuery = JSON.parse(req.query.q);
 				}
@@ -118,7 +120,7 @@ router.get('/list', function(req, res, next) {
 /**
  * list games
  * No parameters needed
- * endpoint: GET 	/games/list
+ * endpoint: GET 	/games/lista
  */
 router.get('/lista', function(req, res, next) {
 	// find game
@@ -345,7 +347,7 @@ router.get('/', function(req, res, next) {
 
 module.exports = router;
 
-
+/*
 
 // Aux Function
 function IsJsonString(str) {
@@ -357,3 +359,5 @@ function IsJsonString(str) {
     }
     return true;
 }
+
+*/
