@@ -336,12 +336,90 @@ router.post('/like', function (req, res) {
 
 
 
+
+
+/**
+ * 
+ * Set a GAME unavailable (status : '3' => deleted) 
+ * DELETE   /game/
+ * parameter:  game_id  (game id)
+ * 
+ */
+router.post('/del', function (req, res) {
+
+	// check parameters
+	if (!req.body.game_id) {
+		// 400 - bad request
+		console.log('** No Parameters. Game name required');
+		return res.status(400).send('Bad parameters. Game Id required ')
+
+	}
+
+	var gameId = req.body.game_id;
+
+	// find game
+	req.db.collection('games').findOne(
+		{"_id" : new ObjectId(gameId)},
+		function (err, doc) {
+
+			// if error, return
+			if (err) {
+				// 500
+				return res.status(500).send(err.message); 
+			}
+			// if NOT found, update
+			else if (!doc) {
+				// Game not Found
+				return res.status(404).send('Game ' + req.body.game_id  + 'NOT exists')
+			}
+
+			else {
+			// game found -- UPdate status: set to 3 => Deleted
+			req.db.collection('games').update(
+				//update_filter,
+				{"_id" : new ObjectId(gameId)},
+				{
+					$set:{'status': 3}
+				},
+					true,
+					true,
+				function (err, doc) {
+					// if error, return
+					if (err) {
+						// 500
+						return res.status(500).send(err.message)
+					}
+					// Nothing Here
+				}
+			)  // update end
+
+
+
+			res.jsonp(doc); // delete ENDs ; sends a response needed to END the Update.  Response with a record updated info
+			console.log(doc)
+
+			}
+			
+
+		}
+	) // find one
+})
+
+
+
+
+
+
 //*
 
 /* GET games listing. */
 router.get('/', function(req, res, next) {
 	  res.send('respond with a resource');
 	});
+
+
+
+
 
 
 

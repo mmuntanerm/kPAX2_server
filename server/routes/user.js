@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var {ObjectId} = require('mongodb'); //like ObjectId=require('mongodb').ObjectId;
 
 var auxliar = require ('./aux.js');  // Imports aux functions 
 
@@ -151,6 +152,95 @@ router.get('/lista', function(req, res, next) {
 		}
 	)
 })
+
+
+
+
+
+
+/**
+ * 
+ * Set a USER unavailable (status : '3' => deleted) 
+ * POST   /user/del
+ * parameter:  user_id  (game id)
+ * 
+ */
+router.post('/del', function (req, res) {
+
+	// check parameters
+	if (!req.body.user_id) {
+		// 400 - bad request
+		console.log('** No Parameters. user_id required');
+		return res.status(400).send('Bad parameters. user_id required ')
+
+	}
+
+	var userId = req.body.user_id;
+
+	// find game
+	req.db.collection('users').findOne(
+		{"_id" : new ObjectId(userId)},
+		function (err, doc) {
+
+			// if error, return
+			if (err) {
+				// 500
+				return res.status(500).send(err.message); 
+			}
+			// if NOT found, update
+			else if (!doc) {
+				// Game not Found
+				return res.status(404).send('USER ' + req.body.user_id  + 'NOT exists')
+			}
+
+			else {
+			// game found -- UPdate status: set to 3 => Deleted
+			req.db.collection('users').update(
+				//update_filter,
+				{"_id" : new ObjectId(userId)},
+				{
+					$set:{'status': 3}
+				},
+					true,
+					true,
+				function (err, doc) {
+					// if error, return
+					if (err) {
+						// 500
+						return res.status(500).send(err.message)
+					}
+					// Nothing Here
+				}
+			)  // update end
+
+
+
+			res.jsonp(doc); // delete ENDs ; sends a response needed to END the Update.  Response with a record updated info
+			console.log(doc)
+
+			}
+			
+
+		}
+	) // find one
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* GET users listing. */
