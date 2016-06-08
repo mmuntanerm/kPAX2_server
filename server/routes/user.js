@@ -126,7 +126,7 @@ router.get('/list', function(req, res, next) {
  * URL example:  METHOD: GET
  * http://localhost:3000/user/lista
  */
-router.get('/lista', function(req, res, next) {
+router.get('/listall', function(req, res, next) {
 	// find user
 	req.db.collection('users').find(
 		{},
@@ -152,6 +152,54 @@ router.get('/lista', function(req, res, next) {
 		}
 	)
 })
+
+
+
+
+
+/**
+ * list ONE user (by Id of the user)
+ * parameter: user_id
+ * GET /user/:user_id
+ * 
+ * Example: http://localhost:3000/user/57546d42ff435e591d083d04
+ */
+router.get('/:user_id', function(req, res, next) {
+	var userId = req.params.user_id;
+	console.log(userId);
+	// find user
+	req.db.collection('users').find(
+	//		{"_id" : userId},
+	//		{"_id" : new BSON.ObjectID(userId)},
+		{"_id" : new ObjectId(userId)},
+
+		function (err, cursor) {
+
+			// check error
+			if (err) {
+				return res.status(500).send(err.message)
+			}
+
+			var user = []
+
+			// walk cursor
+			cursor.each(function (err, doc) {
+
+				// end
+				if (doc == null) {
+					return res.jsonp(user)
+				}
+
+				user.push(doc)
+			})
+		}
+	)
+});
+
+
+
+
+
 
 
 

@@ -118,11 +118,11 @@ router.get('/list', function(req, res, next) {
 
 
 /**
- * list games
+ * list ALL the games in the system
  * No parameters needed
  * endpoint: GET 	/games/lista
  */
-router.get('/lista', function(req, res, next) {
+router.get('/listall', function(req, res, next) {
 	// find game
 	req.db.collection('games').find(
 		{},
