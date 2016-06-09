@@ -10,6 +10,10 @@ router.post('/', function (req, res) {
 	// check parameters
 	if (!req.body.name || !req.body.owner_id) {
 		// 400 - bad request
+
+//TODO
+//BUG #6 - return missing, the execution continues
+// 			must be: return res.status(400).send('Bad parameters')		
 		res.status(400).send('Bad parameters')
 	}
 
