@@ -159,13 +159,13 @@ router.get('/listall', function(req, res, next) {
 
 /**
  * list ONE user (by Id of the user)
- * parameter: user_id
- * GET /user/:user_id
+ * parameter: user
+ * GET /user/:user
  * 
  * Example: http://localhost:3000/user/57546d42ff435e591d083d04
  */
-router.get('/:user_id', function(req, res, next) {
-	var userId = req.params.user_id;
+router.get('/:user', function(req, res, next) {
+	var userId = req.params.user;
 	console.log(userId);
 	// find user
 	req.db.collection('users').find(
@@ -210,20 +210,20 @@ router.get('/:user_id', function(req, res, next) {
  * 
  * Set a USER unavailable (status : '3' => deleted) 
  * POST   /user/del
- * parameter:  user_id  (game id)
+ * parameter:  user  (game id)
  * 
  */
 router.post('/del', function (req, res) {
 
 	// check parameters
-	if (!req.body.user_id) {
+	if (!req.body.user) {
 		// 400 - bad request
-		console.log('** No Parameters. user_id required');
-		return res.status(400).send('Bad parameters. user_id required ')
+		console.log('** No Parameters. user required');
+		return res.status(400).send('Bad parameters. user required ')
 
 	}
 
-	var userId = req.body.user_id;
+	var userId = req.body.user;
 
 	// find game
 	req.db.collection('users').findOne(
@@ -238,7 +238,7 @@ router.post('/del', function (req, res) {
 			// if NOT found, update
 			else if (!doc) {
 				// Game not Found
-				return res.status(404).send('USER ' + req.body.user_id  + 'NOT exists')
+				return res.status(404).send('USER ' + req.body.user  + 'NOT exists')
 			}
 
 			else {

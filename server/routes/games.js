@@ -10,7 +10,7 @@ var auxliar = require ('./aux.js');  // Imports aux functions
 router.post('/', function (req, res) {
 
 	// check parameters
-	if (!req.body.name || !req.body.owner_id) {
+	if (!req.body.name || !req.body.owner) {
 		// 400 - bad request
 		return res.status(400).send('Bad parameters')
 	}
@@ -36,7 +36,7 @@ router.post('/', function (req, res) {
 			// create new game - only a few of fields
 			var game = {
 				name: req.body.name,
-				owner: req.body.owner_id,
+				owner: req.body.owner,
 				status: 1,
 				nlikes: 0,
 				created_at: now,
@@ -341,7 +341,7 @@ router.post('/like', function (req, res) {
 /**
  * 
  * Set a GAME unavailable (status : '3' => deleted) 
- * DELETE   /game/
+ * DELETE   /game/del
  * parameter:  game_id  (game id)
  * 
  */
