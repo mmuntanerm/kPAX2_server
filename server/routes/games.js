@@ -466,8 +466,8 @@ router.post('/:game/like', function (req, res) {
 	var gameId = req.params.game;
 	var userId = req.body.user;
 	
-	console.log ('gameid' + gameId);
-	console.log ('userId' + userId);
+	console.log ('gameId: ' + gameId  + '\r\n');
+	console.log ('userId: ' + userId  + '\r\n');
 	
 
 	if (!req.params.game || !req.body.user) {
@@ -493,7 +493,7 @@ router.post('/:game/like', function (req, res) {
 			// if NOT error, update
 			else if (!doc) {
 				// Game not Found
-				return res.status(400).send('game ' + req.body.name  + ' NOT exists')
+				return res.status(400).send('game ' + req.params.game + ' NOT exists')
 			}
 
 			else {
@@ -518,6 +518,7 @@ router.post('/:game/like', function (req, res) {
 						// if NOT error, update
 						else if (doc) {
 							// Game + user like found
+							console.log('ATENTION PLEASE: The user: ' +  userId  + '  are repeating the like for the game:  ' + gameId + ' Nothing done!! \r\n')
 							// Do nothing here 
 							return 
 							//return res.status(404).send('This like is still reported Game: ' + gameId  + ' user ' + userId + '\r\n'); 
@@ -582,6 +583,146 @@ router.post('/:game/like', function (req, res) {
 })
 
 //  like A end 
+
+
+
+
+
+
+
+
+
+
+router.post('/:game/unlike', function (req, res) {
+	// unmark the LIKE of a game & // decrease the like marker by one 
+	/* POST with param :game in URL . */
+	// check parameters
+	//req.params.game 
+
+	var gameId = req.params.game;
+	var userId = req.body.user;
+	
+	console.log ('gameId: ' + gameId  + '\r\n');
+	console.log ('userId: ' + userId  + '\r\n');
+	
+
+	if (!req.params.game || !req.body.user) {
+		// 400 - bad request
+		console.log('** No Parameters. gameId & userId required');
+		return res.status(400).send('Bad parameters. gameId & userId required ')
+
+	}
+
+
+
+	// find game
+	req.db.collection('games').findOne(
+		{"_id" : new ObjectId(gameId)},
+		
+		function (err, doc) {
+
+			// if error, return
+			if (err) {
+				// 500
+				return res.status(500).send(err.message); 
+			}
+			// if NOT error, update
+			else if (!doc) {
+				// Game not Found
+				return res.status(400).send('game ' + req.params.game + ' NOT exists')
+			}
+
+			else {
+			// game found -- UPdate nlikes -1
+
+
+
+			// comprovam si l'usuari té ja aquest like enregistrat
+			req.db.collection('games').findOne(
+					 {  
+			            "_id" : ObjectId(gameId),
+			            'ulike.uid': userId
+			      	 },
+					
+					function (err, doc) {
+
+						// if error, return
+						if (err) {
+							// 500
+							return res.status(500).send(err.message); 
+						}
+						// if NOT error, update
+						else if (doc) {
+							// Game + user like found
+							
+							// UNMARK THE LIKE + DECREASE THE LIKE MARKER BY ONE
+
+							// var userDateInfo = {'uid': userId, 'date': new Date()};
+							req.db.collection('games').update(
+								//update_filter,
+							    {"_id" : ObjectId(gameId)}, 
+						    
+						        {
+						        	$inc:{nlikes:-1}
+						         	,$pull:{ulike:{ "uid" : userId}} 
+						        }
+							    , {multi:true} ,
+								function (err, doc) {
+									// if error, return
+									if (err) {
+										// 500
+										return res.status(500).send(err.message)
+									}
+									else {
+										// Nothing Here
+									}
+									 
+								}
+							)  // update end
+
+
+
+
+
+
+							 
+							//return res.status(404).send('This like is still reported Game: ' + gameId  + ' user ' + userId + '\r\n'); 
+						}
+
+						else {
+							// el juego existe  y 	
+							// El usuario todavia no ha reportado ningun like --> UPdate nlikes +1
+							// registrar usuario y fecha/hora del like				
+							console.log('ATENTION PLEASE: The user: ' +  userId  + '  never marked the game:  ' + gameId + ' with a like!. Nothing to do here!! \r\n')
+							// do nothing HERE
+							return 
+
+							}
+
+						}
+
+					) // FindOne  (gameId + userId)
+
+
+
+
+
+			res.jsonp(doc); // post ENDs ; sends a response needed to END the Update.  Response with a record updated info
+			console.log(doc)
+
+			}
+			
+
+		}
+
+
+	) // find one
+})
+
+//  UNlike  end 
+
+
+
 
 
 
