@@ -18,13 +18,16 @@ var app = express();
 var database = null
 
 var url = 'mongodb://localhost:27017/kpax2';  // For working on local DB
-var url_r = 'mongodb://readwrite:1234@ds021462.mlab.com:21462/kpax2';  // For working on remote DB
+if (process.env.MONGODB_URL) {
+  url = process.env.MONGODB_URL;
+  
+}
 
 //MongoClient.connect('mongodb://readwrite:1234@ds021462.mlab.com:21462/kpax2', function (err, db) {
 MongoClient.connect(url, function (err, db) {
     if (err) {
         throw err;
-    } 
+    }
     else {
         // async!
         database = db
@@ -52,7 +55,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-// CORS Enabled 
+// CORS Enabled
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -63,7 +66,7 @@ app.use(function(req, res, next) {
 app.use(function (req, res, next) {
   console.log('Aquest middleware s executa cada cop ');
   console.log('Time: %d', Date.now());
-  
+
   next();
 });
 
