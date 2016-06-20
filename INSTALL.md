@@ -6,7 +6,7 @@ Per instalar el servidor simplement cal seguir les següents instruccions:
 El sistema en el que volem muntar el servidor ha de tenir instal·lat i en funcionnament :
 
 1. NodeJs  v6.0.0 o superior
-2. npm (Node Packege Manager) v3.8.6 o superior
+2. npm (Node Package Manager) v3.8.6 o superior
 3. Servidor de mongoDB (mongod v.2.6.10 o superior) si la base de dades ha de ser local
 
 
