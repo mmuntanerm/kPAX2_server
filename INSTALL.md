@@ -4,9 +4,10 @@ Per instalar el servidor simplement cal seguir les següents instruccions:
 
 ## Previs:
 El sistema en el que volem muntar el servidor ha de tenir instal·lat i en funcionnament :
-	1.  NodeJs  v6.0.0 o superior
-	2.  npm (Node Packege Manager) v3.8.6 o superior
-	3.  Servidor de mongoDB (mongod v.2.6.10 o superior) si la base de dades ha de ser local
+
+1. NodeJs  v6.0.0 o superior
+2. npm (Node Packege Manager) v3.8.6 o superior
+3. Servidor de mongoDB (mongod v.2.6.10 o superior) si la base de dades ha de ser local
 
 
 ## Instal·lació del servidor :
@@ -14,7 +15,7 @@ El sistema en el que volem muntar el servidor ha de tenir instal·lat i en funci
 2. Descomprimir-lo en la carpeta en la que es vol instal·lar el servidor
 3. Situar-se a la carpeta /server
 4. Executar:    npm install
-   ###### Aquesta instrucció s'encarrega d'instal·lar totes les dependències del projecte de manera automàtica
+   <p> Aquesta instrucció s'encarrega d'instal·lar totes les dependències del projecte de manera automàtica </p>
 
 
 ## Engegar el servidor
