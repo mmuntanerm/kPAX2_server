@@ -4,9 +4,9 @@ To install the server simply follow these instructions
 
 ## Previous:
 The system in which the server will be installed, must have the following components working properly:
-	1.  NodeJs  v6.0.0 or hihger
-	2.  npm (Node Packege Manager) v3.8.6 or higher
-	3.  MongoDB Server (mongod v.2.6.10 or hihger, only if you want to work on a local database)
+1.  NodeJs  v6.0.0 or hihger
+2.  npm (Node Packege Manager) v3.8.6 or higher
+3.  MongoDB Server (mongod v.2.6.10 or hihger, only if you want to work on a local database)
 
 
 ## Server installation :
@@ -15,7 +15,7 @@ The system in which the server will be installed, must have the following compon
 2. Move to the /server folder.
 3. Execute npm install
 
-		Note that __npm install__  will install automatically all project dependencies.
+		Note that *npm install*  will install automatically all project dependencies.
 
 
 ## Start the Server
