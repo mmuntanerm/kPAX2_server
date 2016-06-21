@@ -1,6 +1,6 @@
 # INSTALL
 
-To install the server simply follow these instructions
+To install the server simply follow this instructions
 
 ## Previous
 
